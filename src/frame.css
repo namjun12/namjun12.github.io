@@ -1,0 +1,92 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+/* 완성된 네컷 프레임. 여기 값을 고치면 화면과 저장되는 PNG 가 함께 바뀐다.
+   .frame 크기는 FramePreview.jsx 의 FRAME_W / FRAME_H 와 맞춰야 한다. */
+
+.frame-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.frame-scaler {
+  transform-origin: top left;
+}
+
+/* 15:10 비율. 안쪽 칸 합이 딱 떨어지게 잡혀 있다 (box-sizing: border-box 기준)
+   가로: 1500 - 34(좌패딩) = 576 + 15 + 576 + 15 + 284
+   세로: 1000 - 68(상하패딩) = 460 + 12 + 460 */
+.frame {
+  /* 한 칸 460 에서 사진 432 를 뺀 나머지. 사진이 4:3 으로 고정이라
+     이 값은 자유롭게 정하는 게 아니라 남는 높이로 결정된다.
+     .frame__caption 높이이자, .frame__side 가 아래로 덜 내려가는 양이다. */
+  --caption-h: 28px;
+
+  width: 1500px;
+  height: 1000px;
+  padding: 34px 0 34px 34px;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: 576px 576px 284px;
+  grid-template-rows: 460px 460px;
+  column-gap: 15px;
+  row-gap: 12px;
+}
+
+.frame__cut {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 576 x 432 = 4:3. 휴대폰 가로 촬영 비율이라 잘리는 부분이 없다.
+   432 + 캡션 28 = 한 칸 높이 460 */
+.frame__photo {
+  width: 576px;
+  height: 432px;
+  object-fit: cover;
+  display: block;
+}
+
+.frame__caption {
+  height: var(--caption-h);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #8a8f93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 두 행에 걸치되, 마지막 캡션 높이만큼 덜 내려와서
+   아래쪽 사진의 밑변에서 끝난다. (grid item 이라 stretch 가 margin 을 뺀 만큼 늘어난다) */
+.frame__side {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  margin-left: 20px;
+  margin-bottom: var(--caption-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.frame__title {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #22333a;
+}
+
+.frame__subtitle {
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 3px;
+  margin-top: 8px;
+  color: #8a8f93;
+}
+.frame__date {
+  font-size: 20px;
+}
