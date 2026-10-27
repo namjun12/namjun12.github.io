@@ -54,7 +54,7 @@
 .frame__caption {
   height: var(--caption-h);
   font-size: 24px;
-  padding-top: 6px;
+  padding-top: 4px;
 }
 
 /* 두 행에 걸치되, 마지막 캡션 높이만큼 덜 내려와서
