@@ -5,12 +5,26 @@ import { useEffect } from "react";
 const HUE_START = 205; // 첫 스텝
 const HUE_END = 340; // 마지막 스텝과 결과 화면
 
+// 글자색은 푸른 쪽에서는 어두워도 괜찮지만, 핑크 쪽에서는 같은 명도면
+// 탁한 자주/갈색으로 보인다. 끝으로 갈수록 더 밝고 선명하게 옮긴다.
+const TEXT_SATURATION_START = 58;
+const TEXT_SATURATION_END = 76;
+const TEXT_LIGHTNESS_START = 37;
+const TEXT_LIGHTNESS_END = 52;
+
+function lerp(from, to, progress) {
+  return from + (to - from) * progress;
+}
+
 // 색조(hue) 하나만 바꾸면 나머지 색이 전부 따라오도록 묶어 둔다.
-function paletteFor(hue) {
+function paletteFor(hue, progress) {
+  const textSaturation = lerp(TEXT_SATURATION_START, TEXT_SATURATION_END, progress);
+  const textLightness = lerp(TEXT_LIGHTNESS_START, TEXT_LIGHTNESS_END, progress);
+
   return {
     "--accent": `hsl(${hue} 72% 68%)`,
     "--accent-strong": `hsl(${hue} 62% 55%)`,
-    "--accent-text": `hsl(${hue} 58% 37%)`,
+    "--accent-text": `hsl(${hue} ${textSaturation.toFixed(1)}% ${textLightness.toFixed(1)}%)`,
     "--accent-pale": `hsl(${hue} 72% 95%)`,
     "--line": `hsl(${hue} 45% 89%)`,
     "--bg-base": `hsl(${hue} 50% 98%)`,
@@ -28,7 +42,7 @@ export function useStepTheme(step, totalSteps) {
     const hue = Math.round(HUE_START + (HUE_END - HUE_START) * progress);
 
     const root = document.documentElement;
-    for (const [name, value] of Object.entries(paletteFor(hue))) {
+    for (const [name, value] of Object.entries(paletteFor(hue, progress))) {
       root.style.setProperty(name, value);
     }
   }, [step, totalSteps]);

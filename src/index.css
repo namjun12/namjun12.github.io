@@ -166,12 +166,11 @@ body {
   display: inline-block;
   padding: 6px 16px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #fff;
+  background: var(--accent-pale);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  box-shadow: var(--shadow-accent);
+  box-shadow: var(--shadow-sm);
 }
 
 .mission__text {
@@ -236,9 +235,10 @@ body {
   color: var(--accent-text);
 }
 
+/* 지나온 스텝은 옅게 채우고, 현재 스텝만 진하게 채워서 구분한다 */
 .steps__item.is-current {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  background: var(--accent-text);
   color: #fff;
   transform: scale(1.14);
   box-shadow: var(--shadow-accent);
@@ -333,10 +333,8 @@ body {
 }
 
 .btn--primary {
-  border-color: transparent;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #fff;
-  box-shadow: var(--shadow-accent);
+  border-color: var(--accent);
+  background: var(--accent-pale);
 }
 
 .btn--primary:hover:not(:disabled) {
@@ -351,10 +349,65 @@ body {
   cursor: not-allowed;
 }
 
+/* 글자에만 그라데이션. background-clip: text 는 배경색까지 글자 모양으로
+   잘라내기 때문에, 버튼이 아니라 글자를 감싼 span 에 걸어야 한다. */
+.gradient-text {
+  background-image: linear-gradient(
+    135deg,
+    var(--accent-strong),
+    var(--accent-text)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 누를 수 없는 버튼은 회색 글자 그대로 */
+.btn:disabled .gradient-text {
+  background-image: none;
+  -webkit-text-fill-color: currentColor;
+}
+
 .result {
   width: 100%;
   display: block;
   box-shadow: 0 2px 16px rgb(0 0 0 / 12%);
+}
+
+/* 가로형/세로형 고르기 */
+.layouts {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.layouts__btn {
+  padding: 9px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.layouts__btn.is-active {
+  background: var(--accent-pale);
+}
+
+.layouts__btn:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
 }
 
 /* width 가 있어야 안쪽 .frame-viewport 의 100% 가 제 폭으로 잡힌다.
@@ -362,33 +415,57 @@ body {
 .frame-gate {
   overflow: hidden;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: var(--shadow-md);
   margin-top: 20px;
+
+  /* 등장 애니메이션의 출발점. ResultView 가 재서 덮어쓴다.
+     못 재면 확대 없이 제자리에서 나타나기만 한다. */
+  --hero-x: 0px;
+  --hero-y: 0px;
+  --hero-scale: 1;
 }
 
-.frame-gate[data-ready="false"] {
+/* 글꼴을 기다리는 동안, 그리고 ResultView 가 등장 크기를 재는 한 프레임 동안.
+   display:none 이 아니라 visibility 라야 레이아웃이 잡혀서 크기를 잴 수 있다. */
+.frame-gate[data-ready="false"],
+.frame-gate[data-intro="wait"] {
   visibility: hidden;
 }
 
-/* 가장 먼저, 기다림 없이. 흐릿하고 작은 상태에서 커졌다가 제자리에 놓인다. */
-.frame-gate[data-ready="true"] {
-  animation: frame-reveal 0.9s cubic-bezier(0.2, 0.9, 0.25, 1);
+/* 가장 먼저, 기다림 없이. 화면 가운데에 한 화면에 다 들어오는 크기(contain)로
+   흐릿하게 나타나(색종이와 같은 타이밍) 잠깐 머문 뒤, 제자리(폭 100%)로 돌아간다.
+   문구는 그 다음에 올라온다. */
+.frame-gate[data-ready="true"][data-intro="run"] {
+  animation: frame-intro 2.5s var(--ease);
 }
 
-@keyframes frame-reveal {
+/* --hero-scale 은 화면에 딱 들어오는 크기(contain)다. 어느 구간에서도 이 값을
+   넘기지 않아야 위아래가 잘리지 않으므로, 커지는 정점을 1.03 배가 아니라 이 값에
+   두고 그 뒤에 살짝 앉는다. */
+@keyframes frame-intro {
+  /* 0 ~ 0.52s: 화면 가운데에서 흐릿하고 작은 상태로 커진다 */
   0% {
     opacity: 0;
-    transform: scale(0.84);
     filter: blur(12px);
+    transform: translate(var(--hero-x), var(--hero-y))
+      scale(calc(var(--hero-scale) * 0.84));
   }
-  60% {
+  /* 0.52s: 한 화면에 꽉 차는 크기 */
+  26% {
     opacity: 1;
-    transform: scale(1.03);
     filter: blur(0);
+    transform: translate(var(--hero-x), var(--hero-y)) scale(var(--hero-scale));
   }
+  /* 0.76 ~ 1.1s: 살짝 앉은 채로 머문다 */
+  38%,
+  55% {
+    transform: translate(var(--hero-x), var(--hero-y))
+      scale(calc(var(--hero-scale) * 1));
+  }
+  /* ~2s: 제자리로 돌아간다 */
   100% {
-    transform: scale(1);
+    transform: none;
   }
 }
 
@@ -397,17 +474,17 @@ body {
   animation: reveal-up 0.6s ease-out backwards;
 }
 
-/* 이미지(0~0.9s) → 색종이(0.4s~) 다음에 문구가 올라오도록 */
+/* 사진이 제자리로 돌아간(2s) 뒤부터. 그 전까지는 backwards 로 숨어 있다. */
 .reveal--1 {
-  animation-delay: 1s;
+  animation-delay: 2.05s;
 }
 
 .reveal--2 {
-  animation-delay: 1.15s;
+  animation-delay: 2.2s;
 }
 
 .reveal--3 {
-  animation-delay: 1.3s;
+  animation-delay: 2.35s;
 }
 
 @keyframes reveal-up {
@@ -520,7 +597,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .frame-gate[data-ready="true"],
+  /* 위 등장 규칙과 명시도를 맞춰야 이쪽이 이긴다 */
+  .frame-gate[data-ready="true"][data-intro="run"],
   .reveal,
   .burst__piece,
   .burst__body {
@@ -551,7 +629,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 24px;
+  width: 100%;
   padding: 38px 34px;
   border: 1px solid var(--line);
   border-radius: 24px;
@@ -581,7 +660,7 @@ body {
 }
 
 .modal__text {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   text-align: center;
 }
