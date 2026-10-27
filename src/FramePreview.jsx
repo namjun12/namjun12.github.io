@@ -45,7 +45,11 @@ function FramePreview({ photos, captions, frameRef }) {
 
           <div className="frame__side">
             <div>
-              <p className="frame__title">{TITLE}</p>
+              <p className="frame__title">
+                사랑
+                <br />
+                네컷
+              </p>
               <p className="frame__subtitle">{SUBTITLE}</p>
             </div>
             <p className="frame__date">2026.11.15</p>

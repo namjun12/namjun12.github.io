@@ -2,6 +2,7 @@
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
+  letter-spacing: -0.02em;
 }
 
 /* 완성된 네컷 프레임. 여기 값을 고치면 화면과 저장되는 PNG 가 함께 바뀐다.
@@ -27,7 +28,7 @@
 
   width: 1500px;
   height: 1000px;
-  padding: 34px 0 34px 34px;
+  padding: 26px;
   background: #ffffff;
   display: grid;
   grid-template-columns: 576px 576px 284px;
@@ -53,7 +54,6 @@
 .frame__caption {
   height: var(--caption-h);
   font-size: 24px;
-  font-weight: 600;
   padding-top: 6px;
 }
 
@@ -70,19 +70,19 @@
 }
 
 .frame__title {
-  font-size: 50px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #22333a;
+  line-height: 1.1;
+  font-size: 80px;
+  color: #ff609a;
 }
 
 .frame__subtitle {
   text-transform: uppercase;
   font-size: 24px;
-  letter-spacing: 3px;
   margin-top: 8px;
-  color: #8a8f93;
+  color: #ff609a;
 }
 .frame__date {
+  text-align: right;
   font-size: 24px;
+  margin-right: 26px;
 }
