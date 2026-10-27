@@ -33,7 +33,7 @@
   grid-template-columns: 576px 576px 284px;
   grid-template-rows: 460px 460px;
   column-gap: 15px;
-  row-gap: 12px;
+  row-gap: 20px;
 }
 
 .frame__cut {
@@ -54,11 +54,7 @@
   height: var(--caption-h);
   font-size: 24px;
   font-weight: 600;
-  letter-spacing: 1px;
-  color: #8a8f93;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding-top: 6px;
 }
 
 /* 두 행에 걸치되, 마지막 캡션 높이만큼 덜 내려와서
@@ -74,7 +70,7 @@
 }
 
 .frame__title {
-  font-size: 36px;
+  font-size: 50px;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: #22333a;
@@ -82,11 +78,11 @@
 
 .frame__subtitle {
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 24px;
   letter-spacing: 3px;
   margin-top: 8px;
   color: #8a8f93;
 }
 .frame__date {
-  font-size: 20px;
+  font-size: 24px;
 }
