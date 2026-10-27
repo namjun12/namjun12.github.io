@@ -6,10 +6,10 @@ import { Footprints, Handshake, PartyPopper, Trees } from "lucide-react";
 // icon 은 lucide-react 아이콘. 바꾸려면 https://lucide.dev 에서 고른 뒤
 // 위 import 에 이름을 추가하면 된다.
 export const STEP_MISSIONS = [
-  { icon: Footprints, text: "다 같이 모여 사진을 찍어서 올려주세요!" },
+  { icon: Footprints, text: "모든 인원이 다 나오게 사진을 찍어주세요!" },
   {
     icon: Handshake,
-    text: "가장 먼저 만난 사람과 손을 잡고 사진을 찍어서 올려주세요!",
+    text: "가장 친하지 않은 두사람이 가운데에 서서 악수하고 사진을 찍어주세요!",
   },
   {
     icon: Trees,
@@ -29,8 +29,8 @@ export const BIBLE = ["[히 10:24]", "서로 돌아보아", "사랑과 선행을
 
 // 스텝별로 사진 밑에 들어갈 고정 문구. 순서는 업로드 순서와 같다.
 export const STEP_CAPTIONS = [
-  "첫 번째 미션",
-  "두 번째 미션",
-  "세 번째 미션",
-  "네 번째 미션",
+  "낯설 수도 있는 첫 단체사진",
+  "우리 더 친해지자!",
+  "다함께 낭만있는 한컷",
+  "",
 ];
