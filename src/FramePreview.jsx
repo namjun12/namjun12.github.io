@@ -39,7 +39,7 @@ function FramePreview({ photos, captions, frameRef }) {
           {photos.map((photo, i) => (
             <div className="frame__cut" key={i}>
               <img className="frame__photo" src={photo} alt="" />
-              <p className="frame__caption">{captions[i]}</p>
+              <p className="frame__caption font-jaram">{captions[i]}</p>
             </div>
           ))}
 
@@ -52,7 +52,15 @@ function FramePreview({ photos, captions, frameRef }) {
               </p>
               <p className="frame__subtitle">{SUBTITLE}</p>
             </div>
-            <p className="frame__date">2026.11.15</p>
+            <div>
+              {/* 성경 구절 */}
+              <p className="font-jaram frame__bible">
+                [히 10:24] <br />
+                서로 돌아보아 <br />
+                사랑과 선행을 격려하며
+              </p>
+              {/* <p className="frame__date">2026.11.15</p> */}
+            </div>
           </div>
         </div>
       </div>

@@ -1,3 +1,23 @@
+/* public/ 안의 파일이라 빌드 후에도 이 경로 그대로 서빙된다 */
+@font-face {
+  font-family: "S-Core Dream";
+  src: url("/assets/fonts/SCDream4.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* 인천교육자람 (내부 이름 iceJaram) */
+@font-face {
+  font-family: "iceJaram";
+  src: url("/assets/fonts/iceJaram-Rg.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --pink: #ff87b3;
+}
+
 * {
   padding: 0px;
   margin: 0px;
@@ -28,7 +48,7 @@
 
   width: 1500px;
   height: 1000px;
-  padding: 26px;
+  padding: 26px 0px 26px 26px;
   background: #ffffff;
   display: grid;
   grid-template-columns: 576px 576px 284px;
@@ -53,7 +73,7 @@
 
 .frame__caption {
   height: var(--caption-h);
-  font-size: 24px;
+  font-size: 36px;
   padding-top: 4px;
 }
 
@@ -62,27 +82,39 @@
 .frame__side {
   grid-column: 3;
   grid-row: 1 / -1;
-  margin-left: 20px;
-  margin-bottom: var(--caption-h);
   display: flex;
+  text-align: right;
   flex-direction: column;
   justify-content: space-between;
+  align-items: end;
+  padding: 10px 26px 0px 0px;
+  margin-bottom: var(--caption-h);
 }
 
 .frame__title {
+  font-family: "S-Core Dream", sans-serif;
   line-height: 1.1;
   font-size: 80px;
-  color: #ff609a;
+  color: var(--pink);
 }
 
 .frame__subtitle {
+  font-family: "S-Core Dream", sans-serif;
   text-transform: uppercase;
-  font-size: 24px;
+  font-size: 26px;
   margin-top: 8px;
-  color: #ff609a;
+  color: var(--pink);
 }
 .frame__date {
-  text-align: right;
   font-size: 24px;
-  margin-right: 26px;
+}
+.frame__bible {
+  font-size: 32px;
+}
+
+/* 어디든 이 클래스를 붙이면 인천교육자람이 적용된다.
+   .frame__title 같은 규칙과 명시도가 같으므로, 나중에 선언된 이쪽이 이긴다.
+   그래서 이 블록은 파일 맨 아래에 있어야 한다. */
+.font-jaram {
+  font-family: "iceJaram", sans-serif;
 }
