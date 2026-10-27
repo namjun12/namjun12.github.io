@@ -133,6 +133,7 @@
 /* 세 줄을 한 줄로 이었으므로 폭(648)에 맞게 줄인다 */
 .frame--portrait .frame__bible {
   font-size: 26px;
+  margin-top: 16px;
 }
 
 .frame__title {
