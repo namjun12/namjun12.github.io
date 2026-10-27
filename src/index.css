@@ -1,4 +1,73 @@
-@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+/* 색 토큰은 useStepTheme.js 가 스텝마다 :root 에 직접 써넣는다.
+   여기 initial-value 가 그 전(첫 페인트)의 기본값이자 유일한 기본 출처다.
+   <color> 로 등록해 둬야 값이 바뀔 때 그라데이션까지 부드럽게 전환된다. */
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #73b7e8;
+}
+@property --accent-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #4598d3;
+}
+@property --accent-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #286795;
+}
+@property --accent-pale {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e8f3fc;
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #dbe8f0;
+}
+@property --bg-base {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f8fbfd;
+}
+@property --bg-tint {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e2f0fa;
+}
+
+:root {
+  /* 색조가 푸른색↔핑크를 오가므로 글자색은 어느 쪽에도 치우치지 않게 둔다 */
+  --ink: #3d3a42;
+  --ink-soft: #8d8894;
+
+  --shadow-sm: 0 2px 10px rgb(120 120 140 / 12%);
+  --shadow-md: 0 12px 32px rgb(120 120 140 / 18%);
+  --shadow-accent: 0 6px 18px rgb(120 120 140 / 30%);
+  --radius: 20px;
+  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* 스텝이 넘어갈 때 색이 튀지 않고 흘러가도록 */
+html {
+  transition:
+    --accent 0.6s var(--ease),
+    --accent-strong 0.6s var(--ease),
+    --accent-text 0.6s var(--ease),
+    --accent-pale 0.6s var(--ease),
+    --line 0.6s var(--ease),
+    --bg-base 0.6s var(--ease),
+    --bg-tint 0.6s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
 
 * {
   box-sizing: border-box;
@@ -6,9 +75,22 @@
 
 body {
   margin: 0;
-  background: #f4f4f5;
-  color: #18181b;
-  font-family: 'Pretendard Variable', system-ui, -apple-system, sans-serif;
+  /* 색종이가 화면 밖으로 날아가도 가로 스크롤이 생기지 않도록 */
+  overflow-x: hidden;
+  /* 스텝 색조를 따라 위쪽에 옅은 번짐이 생긴다 */
+  background: var(--bg-base);
+  background-image: radial-gradient(
+    120% 55% at 50% 0%,
+    var(--bg-tint) 0%,
+    var(--bg-base) 60%
+  );
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family:
+    "Pretendard Variable",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .app {
@@ -26,22 +108,101 @@ body {
 }
 
 .app__title {
-  margin: 0;
-  font-size: 28px;
+  text-align: center;
+  font-size: 32px;
   font-weight: 600;
-  letter-spacing: 4px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+/* 미션 안내 카드 */
+.mission {
+  width: 100%;
+  margin-top: 20px;
+  padding: 26px 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--bg-tint) 0%, #fff 100%);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  animation: mission-in 0.35s ease-out;
+}
+
+@keyframes mission-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.mission__icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 14px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  /* lucide 아이콘은 stroke 가 currentColor 라 색을 여기서 정한다 */
+  color: var(--accent-text);
+  line-height: 1;
+  animation: mission-pop 0.45s ease-out backwards;
+  animation-delay: 0.1s;
+}
+
+@keyframes mission-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+}
+
+.mission__badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-accent);
+}
+
+.mission__text {
+  margin-top: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission,
+  .mission__icon {
+    animation: none;
+  }
 }
 
 .app__caption {
   margin: 0;
-  font-size: 14px;
-  color: #71717a;
+  font-size: 22px;
+  color: var(--accent-strong, #d9834a);
 }
 
 .app__error {
   margin: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #fdeeea;
   font-size: 14px;
-  color: #dc2626;
+  color: #c0492f;
 }
 
 .steps {
@@ -53,43 +214,63 @@ body {
 }
 
 .steps__item {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
-  border: 1px solid #d4d4d8;
+  border: 1px solid var(--line);
   border-radius: 50%;
   font-size: 14px;
-  color: #a1a1aa;
+  font-weight: 600;
+  color: var(--ink-soft);
   background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease);
 }
 
 .steps__item.is-done {
-  border-color: #18181b;
-  color: #18181b;
+  border-color: transparent;
+  background: var(--accent-pale);
+  color: var(--accent-text);
 }
 
 .steps__item.is-current {
-  background: #18181b;
-  border-color: #18181b;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
+  transform: scale(1.14);
+  box-shadow: var(--shadow-accent);
 }
 
 .slot {
   width: 100%;
   aspect-ratio: 4 / 3; /* frame.css 의 .frame__photo 와 같은 비율 */
   padding: 0;
-  border: 1px dashed #c4c4c8;
-  border-radius: 4px;
-  background: #fff;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #fff 0%, var(--bg-base) 100%);
   cursor: pointer;
   overflow: hidden;
   display: grid;
   place-items: center;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    border-color 0.2s var(--ease);
 }
 
 .slot:hover {
-  border-color: #18181b;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.slot:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
 }
 
 .slot img {
@@ -101,57 +282,72 @@ body {
 
 .slot__placeholder {
   font-size: 15px;
-  color: #a1a1aa;
+  font-weight: 500;
+  color: var(--ink-soft);
 }
 
 .hidden-input {
   display: none;
 }
 
-.caption-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d4d4d8;
-  border-radius: 4px;
-  background: #fff;
-  font-size: 14px;
-  font-family: inherit;
-  color: #18181b;
-}
-
-.caption-input:focus {
-  outline: none;
-  border-color: #18181b;
-}
-
 .actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
+  margin-top: 4px;
 }
 
 .btn {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #18181b;
-  border-radius: 4px;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
   background: #fff;
-  color: #18181b;
+  color: var(--accent-text);
+  font-family: inherit;
   font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.18s var(--ease),
+    box-shadow 0.18s var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
 }
 
 .btn--primary {
-  background: #18181b;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
+  box-shadow: var(--shadow-accent);
+}
+
+.btn--primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-md);
 }
 
 .btn:disabled {
-  border-color: #d4d4d8;
-  background: #f4f4f5;
-  color: #a1a1aa;
+  border-color: var(--line);
+  background: var(--bg-base);
+  color: var(--ink-soft);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -159,4 +355,233 @@ body {
   width: 100%;
   display: block;
   box-shadow: 0 2px 16px rgb(0 0 0 / 12%);
+}
+
+/* width 가 있어야 안쪽 .frame-viewport 의 100% 가 제 폭으로 잡힌다.
+   모서리와 그림자는 여기에만 준다. 캡처 대상인 .frame 바깥이라 PNG 에는 안 들어간다. */
+.frame-gate {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  margin-top: 20px;
+}
+
+.frame-gate[data-ready="false"] {
+  visibility: hidden;
+}
+
+/* 가장 먼저, 기다림 없이. 흐릿하고 작은 상태에서 커졌다가 제자리에 놓인다. */
+.frame-gate[data-ready="true"] {
+  animation: frame-reveal 0.9s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+@keyframes frame-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.84);
+    filter: blur(12px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.03);
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 사진이 먼저 뜨고, 문구와 버튼이 차례로 올라온다 */
+.reveal {
+  animation: reveal-up 0.6s ease-out backwards;
+}
+
+/* 이미지(0~0.9s) → 색종이(0.4s~) 다음에 문구가 올라오도록 */
+.reveal--1 {
+  animation-delay: 1s;
+}
+
+.reveal--2 {
+  animation-delay: 1.15s;
+}
+
+.reveal--3 {
+  animation-delay: 1.3s;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* 색종이의 기준 영역. .app 의 flex 간격을 그대로 흉내내서
+   문구를 감싸도 배치가 달라지지 않게 한다. */
+.headline {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 이미지가 자리를 잡는 순간 곧바로, 문구 쪽에서 좌우로 퍼지며 떨어진다 */
+.burst {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  /* 좌우로 날아가는 최대 거리. --rise 와 비슷한 수준으로 잡아야
+     옆으로 눕지 않고 솟았다 떨어지는 포물선이 된다. */
+  --spread: min(50vw, 350px);
+  /* 이미지 등장(0.9s)이 거의 끝나는 지점. 가로/세로가 같은 값을 써야
+     궤적이 어긋나지 않는다. */
+  --lift-off: 0.4s;
+}
+
+/* 바깥 요소 = 가로 이동(등속) + 사라짐.
+   출발점은 가운데에서 --origin-x 만큼 좌우로 흩어 둔다. */
+.burst__piece {
+  position: absolute;
+  left: calc(50% + var(--origin-x));
+  top: var(--origin-y);
+  opacity: 0;
+  /* 등속이 아니라 강한 ease-out. 터지는 순간 가장 빠르고 점점 느려진다. */
+  animation: burst-x 1.8s cubic-bezier(0.05, 0.75, 0.25, 1) forwards;
+  animation-delay: calc(var(--lift-off) + var(--delay));
+}
+
+@keyframes burst-x {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(calc(var(--x) * var(--spread)));
+  }
+}
+
+/* 안쪽 요소 = 세로 이동(솟았다 떨어짐) + 회전.
+   키프레임마다 타이밍 함수를 달리 줘야 포물선처럼 보인다. */
+.burst__body {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 3px;
+  animation: burst-y 1.8s forwards;
+  animation-delay: calc(var(--lift-off) + var(--delay));
+}
+
+@keyframes burst-y {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+  /* 빠르게 솟아 정점을 찍고, 남은 구간 내내 가속하며 떨어진다 */
+  38% {
+    transform: translateY(var(--rise)) rotate(calc(var(--spin) * 0.38));
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateY(var(--fall)) rotate(var(--spin));
+  }
+}
+
+/* 알록달록하게 6색 + 동그라미/네모 섞기 */
+.burst__piece:nth-child(6n + 1) .burst__body {
+  background: #f58c8c;
+}
+.burst__piece:nth-child(6n + 2) .burst__body {
+  background: #ffd166;
+}
+.burst__piece:nth-child(6n + 3) .burst__body {
+  background: #8ecae6;
+}
+.burst__piece:nth-child(6n + 4) .burst__body {
+  background: #a5e887;
+}
+.burst__piece:nth-child(6n + 5) .burst__body {
+  background: #c79bff;
+}
+.burst__piece:nth-child(6n) .burst__body {
+  background: #ffa36c;
+}
+
+.burst__piece:nth-child(2n) .burst__body {
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame-gate[data-ready="true"],
+  .reveal,
+  .burst__piece,
+  .burst__body {
+    animation: none;
+  }
+
+  .burst {
+    display: none;
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 20px;
+  display: grid;
+  place-items: center;
+  /* 반투명이 아니라 꽉 채우는 배경. 뒤가 비치면 안 된다. */
+  background: radial-gradient(
+    120% 60% at 50% 0%,
+    var(--bg-tint) 0%,
+    var(--bg-base) 60%
+  );
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 38px 34px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.modal__spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--accent-pale);
+  border-top-color: var(--accent-text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal__spinner {
+    animation-duration: 3s;
+  }
+}
+
+.modal__text {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
 }
