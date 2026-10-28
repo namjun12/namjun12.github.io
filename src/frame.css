@@ -38,11 +38,6 @@
 
 /* 가로형/세로형이 함께 쓰는 값. 크기와 칸 배치는 아래 .frame--* 에서 정한다. */
 .frame {
-  /* 한 칸에서 사진 높이를 뺀 나머지. 사진이 4:3 으로 고정이라
-     이 값은 자유롭게 정하는 게 아니라 남는 높이로 결정된다.
-     .frame__caption 높이이자, .frame__side 가 아래로 덜 내려가는 양이다. */
-  --caption-h: 28px;
-
   background: #ffffff;
   display: grid;
 }
@@ -72,36 +67,38 @@
   row-gap: 16px;
 }
 
+/* 캡션을 사진 위에 얹으므로 기준점이 된다 */
 .frame__cut {
-  display: flex;
-  flex-direction: column;
+  position: relative;
 }
 
-/* 4:3. 휴대폰 가로 촬영 비율이라 잘리는 부분이 없다. */
+/* 사진이 칸을 꽉 채운다. 넘치는 쪽은 잘라서 맞춘다. */
 .frame__photo {
   object-fit: cover;
   display: block;
 }
 
-/* 432 + 캡션 28 = 한 칸 높이 460 */
 .frame--landscape .frame__photo {
   width: 576px;
-  height: 432px;
+  height: 460px;
 }
 
-/* 486 + 캡션 28 = 한 칸 높이 514 */
 .frame--portrait .frame__photo {
   width: 648px;
-  height: 486px;
+  height: 514px;
 }
 
-/* 폭을 글자에 맞춰 줄여 둔다. 완성 화면에서 한 글자씩 쓰이는 연출이
-   글자 폭 기준으로 잘려야 하기 때문이다(그림에는 차이가 없다). */
+/* 사진 왼쪽 아래 모서리에 얹는 알약. 반투명 흰 배경이라 사진이 밝든 어둡든 읽힌다.
+   폭이 글자에 딱 맞아서, 한 글자씩 쓰이는 연출을 하면 알약이 옆으로 자라난다. */
 .frame__caption {
-  width: fit-content;
-  height: var(--caption-h);
-  font-size: 30px;
-  padding-top: 2px;
+  position: absolute;
+  left: 0px;
+  top: 7px;
+  padding: 4px 20px 8px;
+  border-radius: 999px;
+  /* background: var(--pink); */
+  color: #fff;
+  font-size: 34px;
 }
 
 /* 제목 블록과 구절 블록이 들어가는 자리. 배치는 레이아웃마다 다르다. */
@@ -109,9 +106,8 @@
   display: flex;
 }
 
-/* 가로형: 오른쪽 칸에 위아래로 벌려 놓는다. 두 행에 걸치되 마지막 캡션 높이만큼
-   덜 내려와서 아래쪽 사진의 밑변에서 끝난다.
-   (grid item 이라 stretch 가 margin 을 뺀 만큼 늘어난다) */
+/* 가로형: 오른쪽 칸에 위아래로 벌려 놓는다. 두 행에 걸쳐서
+   아래쪽 사진의 밑변에서 같이 끝난다. */
 .frame--landscape .frame__side {
   grid-column: 3;
   grid-row: 1 / -1;
@@ -120,7 +116,6 @@
   align-items: end;
   text-align: right;
   padding: 10px 26px 0px 0px;
-  margin-bottom: var(--caption-h);
 }
 
 /* 세로형: 스트립 맨 아래 칸. 제목과 구절을 각각 한 줄로 펴서 가운데 모아 놓는다. */
