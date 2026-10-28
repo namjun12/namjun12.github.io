@@ -95,7 +95,10 @@
   height: 486px;
 }
 
+/* 폭을 글자에 맞춰 줄여 둔다. 완성 화면에서 한 글자씩 쓰이는 연출이
+   글자 폭 기준으로 잘려야 하기 때문이다(그림에는 차이가 없다). */
 .frame__caption {
+  width: fit-content;
   height: var(--caption-h);
   font-size: 30px;
   padding-top: 2px;

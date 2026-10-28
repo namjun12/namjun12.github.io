@@ -41,7 +41,8 @@ function FramePreview({ photos, frameRef, layout }) {
       <div className="frame-scaler" style={{ transform: `scale(${scale})` }}>
         <div className={`frame frame--${layout}`} ref={frameRef}>
           {photos.map((photo, i) => (
-            <div className="frame__cut" key={i}>
+            // --i 는 완성 화면의 등장 애니메이션이 칸마다 시간차를 두는 데 쓴다
+            <div className="frame__cut" key={i} style={{ "--i": i }}>
               <img className="frame__photo" src={photo} alt="" />
               <p className="frame__caption font-jaram">{STEP_CAPTIONS[i]}</p>
             </div>

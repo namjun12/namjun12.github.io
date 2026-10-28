@@ -28,6 +28,9 @@ const CONFETTI = Array.from({ length: PIECE_COUNT }, (_, i) => {
   };
 });
 
+// 한 칸씩 보여 주는 동안 화면 양옆에 남길 여백(px)
+const HERO_GUTTER = 8;
+
 // 처음 보여줄 레이아웃. 등장 애니메이션은 이 레이아웃 기준으로 한 번만 재므로
 // 상태가 아니라 상수로 둔다.
 const INITIAL_LAYOUT = "portrait";
@@ -46,32 +49,50 @@ function ResultView({ photos }) {
   const frameText = STEP_CAPTIONS.join("") + BIBLE.join("") + TITLE + SUBTITLE;
   const fontsReady = useFontsReady(frameText);
 
-  // 제자리(폭 100%)에서 "한 화면에 다 들어오는 크기로 화면 가운데" 까지 가야 할
-  // 배율과 거리. 크기를 계산하지 않고 실제로 그려진 박스를 잰다. 그리기가 끝난
-  // 뒤(useEffect)라야 안쪽 미리보기의 축소 비율까지 반영된 값이 나온다.
-  // 재기 전에는 프레임을 감춰 두므로(data-intro="wait") 제자리 크기로 비치지 않는다.
+  // 등장 연출(frame-intro)이 쓸 좌표. 크기를 계산하지 않고 실제로 그려진 박스를
+  // 잰다. 그리기가 끝난 뒤(useEffect)라야 안쪽 미리보기의 축소 비율까지 반영된
+  // 값이 나온다. 재기 전에는 프레임을 감춰 두므로(data-intro="wait") 비치지 않는다.
   useEffect(() => {
     if (!fontsReady || hero) return;
 
     // 앞 스텝에서 스크롤이 내려가 있으면 가운데 계산이 어긋난다
     window.scrollTo(0, 0);
 
-    const { width, height, left, top } =
-      gateRef.current.getBoundingClientRect();
+    const gate = gateRef.current;
+    const { width, height, left, top } = gate.getBoundingClientRect();
 
     // 주소창이 겹치는 모바일에서는 innerHeight 가 실제로 보이는 높이보다 크다
     const view = window.visualViewport;
     const vw = view ? view.width : window.innerWidth;
     const vh = view ? view.height : window.innerHeight;
 
-    // 가로세로 중 먼저 꽉 차는 쪽에 맞춘다(contain). 세로형은 높이가 먼저 찬다.
-    // frame-intro 가 이 값을 넘기지 않으므로 여유분을 따로 빼지 않는다.
-    const scale = Math.min(vw / width, (vh / height) * 0.95);
+    // 확대/축소는 프레임 한가운데를 기준으로 걸린다
+    const center = top + height / 2;
+    // scale 배로 키운 뒤에도 y(제자리 기준 화면 세로 좌표)가 화면 한가운데에
+    // 오도록 하는 이동값
+    const panTo = (y, scale) =>
+      `${(vh / 2 - center - scale * (y - center)).toFixed(1)}px`;
+
+    // 한 칸씩 볼 때는 양옆 여백만 남기고 폭을 채우고,
+    // 전체를 볼 때는 높이까지 들어가게 줄인다
+    const zoom = (vw - HERO_GUTTER * 2) / width;
+    const all = Math.min(zoom, (vh / height) * 0.95);
+
+    // 칸 위치도 재서 쓴다. 세로형은 한 줄로 쌓여 있어서 카메라가 아래로 내려간다.
+    const cuts = [...gate.querySelectorAll(".frame__cut")];
 
     setHero({
-      "--hero-scale": scale.toFixed(4),
-      "--hero-x": `${(vw / 2 - (left + width / 2)).toFixed(1)}px`,
-      "--hero-y": `${(vh / 2 - (top + height / 2)).toFixed(1)}px`,
+      "--intro-zoom": zoom.toFixed(4),
+      "--intro-all": all.toFixed(4),
+      // 가로는 어느 구간에서나 가운데라 하나면 된다
+      "--intro-x": `${(vw / 2 - (left + width / 2)).toFixed(1)}px`,
+      "--intro-all-y": panTo(center, all),
+      ...Object.fromEntries(
+        cuts.map((cut, i) => {
+          const box = cut.getBoundingClientRect();
+          return [`--intro-y${i}`, panTo(box.top + box.height / 2, zoom)];
+        }),
+      ),
     });
   }, [fontsReady, hero]);
 
